@@ -13,7 +13,7 @@ META_dash_INF_manifest_xml = """<?xml version="1.0" encoding="UTF-8" ?>
  <manifest:file-entry manifest:full-path="settings.xml" manifest:media-type="text/xml"/>
 </manifest:manifest>"""
 
-metafile_xml ="""<?xml version="1.0" encoding="UTF-8" ?>
+meta_xml ="""<?xml version="1.0" encoding="UTF-8" ?>
 <office:document-meta
     xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
     xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"
