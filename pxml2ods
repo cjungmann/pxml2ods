@@ -1,0 +1,79 @@
+#!/usr/bin/env python2
+# -*- mode:python -*-
+
+import sys
+import zipfile
+import libxml2
+import libxslt
+from heredocs import *
+
+g_infile = None
+g_outfile = None
+
+def set_global_filenames():
+    global g_infile, g_outfilename
+
+    argcount = len(sys.argv)
+    if argcount > 1:
+        g_infile = sys.argv[1]
+    if argcount > 2:
+        g_outfilename = sys.argv[2]
+
+def perform_transform(xmldoc, xslproc, ods):
+    result = xslproc.applyStylesheet(xmldoc,None)
+    strval = xslproc.saveResultToString(result)
+    ods.writestr("content.xml", strval, zipfile.ZIP_DEFLATED)
+
+def transform_xmldoc_into_ods(xmldoc, ods):
+    try:
+        xsldoc = libxml2.readFile("transform.xsl",None,0)
+        try:
+            xslproc = libxslt.parseStylesheetDoc(xsldoc)
+            perform_transform(xmldoc, xslproc, ods)
+            xslproc.freeStylesheet()
+            
+        except Exception as e:
+            print "Failed to load XSL stylesheet (%s)." % e
+    except libxml2.parserError as e:
+        print "Failed to open XSL document \"transform.xsl\" (%s)." % e
+
+
+def process_files(xmldoc, outfile):
+    ods = zipfile.ZipFile(outfile,"w")
+    if ods:
+        ods.writestr("mimetype", mimetype, zipfile.ZIP_STORED)
+        ods.writestr("META-INF/manifest.xml", META_dash_INF_manifest_xml, zipfile.ZIP_DEFLATED)
+        ods.writestr("metafile.xml", metafile_xml, zipfile.ZIP_DEFLATED)
+        ods.writestr("settings.xml", settings_xml, zipfile.ZIP_DEFLATED)
+        ods.writestr("styles.xml", styles_xml, zipfile.ZIP_DEFLATED)
+
+        transform_xmldoc_into_ods(xmldoc, ods)
+
+        ods.close()
+
+def get_outfile(xmldoc):
+    global g_outfilename
+    if g_outfilename:
+        outfile = open(g_outfilename,"w")
+        process_files(xmldoc, outfile)
+        outfile.close()
+    else:
+        process_files(infile, sys.stdout)
+
+def get_in_file():
+    if g_infile:
+        try:
+            xmldoc = libxml2.readFile(g_infile,None,0)
+            get_outfile(xmldoc)
+            xmldoc.freeDoc()
+        except libxml2.parserError as e:
+            print "Failed to open XML document \"%s\" (%s)." % (fname, e)
+    else:
+        print "Error: streaming input not yet supported."
+
+def main():
+    set_global_filenames()
+    get_in_file()
+
+if __name__ == "__main__":
+    main()
