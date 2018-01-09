@@ -16,7 +16,9 @@
       encoding="utf-8"/>
 
   <xsl:template match="/">
-    <office:document-content>
+    <office:document-content
+        office:mimetype="application/vnd.oasis.opendocument.spreadsheet"
+        office:version="1.2">
       <office:body>
         <xsl:apply-templates select="/*/*[@rndx][schema]" />
       </office:body>
@@ -28,12 +30,12 @@
     <xsl:variable name="drows" select="*[not($nrows)][local-name()!='schema']" />
 
     <office:spreadsheet>
-      <office:table>
+      <table:table>
         <xsl:apply-templates select="schema" mode="build_headline" />
         <xsl:apply-templates select="$nrows|$drows" mode="build_line">
           <xsl:with-param name="schema" select="schema" />
         </xsl:apply-templates>
-      </office:table>
+      </table:table>
     </office:spreadsheet>
   </xsl:template>
 
