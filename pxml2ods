@@ -42,12 +42,13 @@ def process_files(xmldoc, outfile):
     ods = zipfile.ZipFile(outfile,"w")
     if ods:
         ods.writestr("mimetype", mimetype, zipfile.ZIP_STORED)
+        ods.writestr("META-INF/", "", zipfile.ZIP_STORED)
         ods.writestr("META-INF/manifest.xml", META_dash_INF_manifest_xml, zipfile.ZIP_DEFLATED)
-        ods.writestr("metafile.xml", metafile_xml, zipfile.ZIP_DEFLATED)
+        transform_xmldoc_into_ods(xmldoc, ods)
+
+        ods.writestr("meta.xml", meta_xml, zipfile.ZIP_DEFLATED)
         ods.writestr("settings.xml", settings_xml, zipfile.ZIP_DEFLATED)
         ods.writestr("styles.xml", styles_xml, zipfile.ZIP_DEFLATED)
-
-        transform_xmldoc_into_ods(xmldoc, ods)
 
         ods.close()
 
