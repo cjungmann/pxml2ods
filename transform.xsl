@@ -20,12 +20,12 @@
         office:mimetype="application/vnd.oasis.opendocument.spreadsheet"
         office:version="1.2">
       <office:body>
-        <xsl:apply-templates select="/*/*[@rndx][schema]" />
+        <xsl:apply-templates select="//*[schema]" />
       </office:body>
     </office:document-content>
   </xsl:template>
 
-  <xsl:template match="*[@rndx][schema]">
+  <xsl:template match="*[schema]">
     <xsl:variable name="nrows" select="*[local-name()=../@row-name]" />
     <xsl:variable name="drows" select="*[not($nrows)][local-name()!='schema']" />
 
