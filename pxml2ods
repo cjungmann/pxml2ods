@@ -10,14 +10,25 @@ from heredocs import *
 g_infile = None
 g_outfile = None
 
+def show_usage():
+    print "Usage:"
+    print "./pxml2ods <xml source file> <ods filename>"
+    print "example: ./pxml2ods names_list.xml names.ods\n\n"
+    
+
 def set_global_filenames():
     global g_infile, g_outfilename
 
     argcount = len(sys.argv)
+    if argcount == 1:
+        show_usage()
+        return False
     if argcount > 1:
         g_infile = sys.argv[1]
     if argcount > 2:
         g_outfilename = sys.argv[2]
+
+    return True
 
 def perform_transform(xmldoc, xslproc, ods):
     result = xslproc.applyStylesheet(xmldoc,None)
@@ -73,8 +84,8 @@ def get_in_file():
         print "Error: streaming input not yet supported."
 
 def main():
-    set_global_filenames()
-    get_in_file()
+    if set_global_filenames():
+        get_in_file()
 
 if __name__ == "__main__":
     main()
