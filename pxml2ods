@@ -2,6 +2,7 @@
 # -*- mode:python -*-
 
 import sys
+import os
 import zipfile
 import libxml2
 import libxslt
@@ -9,6 +10,9 @@ from heredocs import *
 
 g_infile = None
 g_outfile = None
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+g_transformxsl = os.path.join(__location__, "transform.xsl")
 
 def show_usage():
     print "Usage:"
@@ -37,7 +41,7 @@ def perform_transform(xmldoc, xslproc, ods):
 
 def transform_xmldoc_into_ods(xmldoc, ods):
     try:
-        xsldoc = libxml2.readFile("transform.xsl",None,0)
+        xsldoc = libxml2.readFile(g_transformxsl,None,0)
         try:
             xslproc = libxslt.parseStylesheetDoc(xsldoc)
             perform_transform(xmldoc, xslproc, ods)
