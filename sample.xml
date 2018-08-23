@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<list>
+  <schema row-name="item">
+    <field name="id" />
+    <field name="name" />
+    <field name="location" />
+  </schema>
+  <item id="1" name="10-inch Cast Iron Skillet" location="kitchen" />
+  <item id="2" name="Stainless Spatula" location="kitchen" />
+  <item id="3" name="6-quart Stainless Mixing Bowl" location="kitchen" />
+  <item id="4" name="Unbleached Flour" location="pantry" />
+  <item id="5" name="Granulated Sugar" location="pantry" />
+  <item id="6" name="Baking Soda" location="spice cabinet" />
+  <item id="7" name="Table Salt" location="spice cabinet" />
+  <item id="8" name="Eggs" location="refrigerator" />
+  <item id="9" name="Milk" location="refrigerator" />
+  <item id="10" name="Buttermilk" location="refrigerator" />
+  <item id="11" name="Butter" location="refrigerator" />
+</list>
