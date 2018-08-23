@@ -1,0 +1,7 @@
+#!/bin/bash
+
+script="#!/bin/bash
+
+$PWD/pxml2ods \"\${@}\""
+
+echo "${script}" > /usr/local/bin/pxml2ods
