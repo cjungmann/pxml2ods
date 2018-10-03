@@ -30,14 +30,37 @@ Advantages of the ODS file format
   data is stored as an XML document, with other XML and text documents, in a zipped
   file.
 
-### Schema Use
+### XML Source Format
 
-Using a schema with a collection of field definitions helps prevent the
-misalignment of data if a data row omits an attribute due to a NULL value.
+The XML document that is the source for the ODS file must conform to some
+simple rules.  The rules are a greatly-simplified version of the XML document
+created by the [Schema Server component](https://github.com/cjungmann/SchemaServer).
 
-This project may be a candidate to replace the export feature of the Schema
-Framework, which uses a schema to direct the rendering of pages.  This project
-is designed to recognise the schema format of the Schema Framework, but to
+- The document must include a *schema* element as a child of the document element,
+  and the table rows must be elements that are also direct children of the document
+  element.
+
+- The schema must include a **row-name** attribute, the value of which is the
+  name of the row elements.
+
+- The schema must contain a collection of *field* elements containing a **name**
+  attribute that corresponds to an attribute of the row elements.
+
+- The spreadsheet columns will consist of the field elements of the schema,
+  in document order.
+
+~~~html
+<?xml version=1.0?>
+<list>
+   <schema row-name="row">
+      <field name="id" />
+      <field name="fname" />
+      <field name="lname" />
+   </schema>
+   <row id="1" fname="Tom" lname="Swift" />
+   <row id="2" fname="Phyllis" lname="Newton" />
+</list>
+~~~
 
 ### XSL Transformation
 
