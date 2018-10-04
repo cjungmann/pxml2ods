@@ -26,9 +26,25 @@ meta_xml ="""<?xml version="1.0" encoding="UTF-8" ?>
 
 settings_xml = """<?xml version="1.0" encoding="UTF-8" ?>
 <office:document-settings
-    xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
-    office:version="1.2">
-  <office:settings />
+ xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+ xmlns:config="urn:oasis:names:tc:opendocument:xmlns:config:1.0"
+ xmlns:ooo="http://openoffice.org/2004/office"
+ office:version="1.2">
+  <office:settings>
+    <config:config-item-set config:name="ooo:view-settings">
+      <config:config-item-map-indexed config:name="Views">
+        <config:config-item-map-entry>
+          <config:config-item-map-named config:name="Tables">
+            <config:config-item-map-entry config:name="Sheet1">
+              <config:config-item config:name="VerticalSplitMode" config:type="short">2</config:config-item>
+              <config:config-item config:name="VerticalSplitPosition" config:type="int">1</config:config-item>
+              <config:config-item config:name="PositionBottom" config:type="int">1</config:config-item>
+            </config:config-item-map-entry>
+          </config:config-item-map-named>
+        </config:config-item-map-entry>
+      </config:config-item-map-indexed>
+    </config:config-item-set>
+  </office:settings>
 </office:document-settings>"""
 
 styles_xml = """<?xml version="1.0" encoding="UTF-8" ?>
@@ -36,4 +52,3 @@ styles_xml = """<?xml version="1.0" encoding="UTF-8" ?>
     xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
     office:version="1.2">
 </office:document-styles>"""
-
