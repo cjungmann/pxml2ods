@@ -6,6 +6,7 @@ import os
 import zipfile
 import libxml2
 import libxslt
+import tempfile
 from heredocs import *
 
 g_infile = None
@@ -35,22 +36,32 @@ def set_global_filenames():
     return True
 
 def perform_transform(xmldoc, xslproc, ods):
-    result = xslproc.applyStylesheet(xmldoc,None)
+    result = xslproc.applyStylesheet(xmldoc, None)
     strval = xslproc.saveResultToString(result)
     ods.writestr("content.xml", strval, zipfile.ZIP_DEFLATED)
 
 def transform_xmldoc_into_ods(xmldoc, ods):
     try:
-        xsldoc = libxml2.readFile(g_transformxsl,None,0)
-        try:
-            xslproc = libxslt.parseStylesheetDoc(xsldoc)
-            perform_transform(xmldoc, xslproc, ods)
-            xslproc.freeStylesheet()
-            
-        except Exception as e:
-            print "Failed to load XSL stylesheet (%s)." % e
-    except libxml2.parserError as e:
-        print "Failed to open XSL document \"transform.xsl\" (%s)." % e
+        xsldoc = libxml2.readFile(g_transformxsl, None, 0)
+        if xsldoc:
+            try:
+                xslproc = libxslt.parseStylesheetDoc(xsldoc)
+                if xslproc:
+                    try:
+                        perform_transform(xmldoc, xslproc, ods)
+                    except Exception as e:
+                        sys.stderr.write("XSL Failed to transform (%s)." % e)
+                    
+                    xslproc.freeStylesheet()
+                else:
+                    sys.stderr.write("parseStylesheet failed to return a processor.")
+
+            except libxml2.parserError as e:
+                sys.stderr.write("Failed to parse XSL document \"transform.xsl\" (%s)." % e)
+        else:
+            sys.stderr.write("Failed to open XSL stylesheet %s." % g_transformxsl)
+    except Exception as e:
+        sys.stderr.write("libxml2 failed to read the stylesheet.")
 
 
 def process_files(xmldoc, outfile):
@@ -74,18 +85,35 @@ def get_outfile(xmldoc):
         process_files(xmldoc, outfile)
         outfile.close()
     else:
-        process_files(g_infile, sys.stdout)
+        tfd, fpath = tempfile.mkstemp()
+        if tfd:
+            fs = os.fdopen(tfd, "w+")
+            try:
+                process_files(xmldoc, fs)
+                fs.seek(0)
+                print fs.read()
+            except Exception as e:
+                sys.stderr.write("Error processing files (%s)." % e)
+
+            fs.close()
 
 def get_in_file():
     if g_infile:
         try:
-            xmldoc = libxml2.readFile(g_infile,None,0)
+            if g_infile == '-':
+                fname = "stdout"
+                xmldoc = libxml2.readFd(0, "input.xml", None, 0)
+                
+            else:
+                fname = g_infile
+                xmldoc = libxml2.readFile(g_infile, None, 0)
+                
             get_outfile(xmldoc)
             xmldoc.freeDoc()
         except libxml2.parserError as e:
-            print "Failed to open XML document \"%s\" (%s)." % (fname, e)
+            sys.stderr.write("Failed to open XML document \"%s\" (%s)." % (fname, e))
     else:
-        print "Error: streaming input not yet supported."
+        sys.stderr.write("No filename or '-' (for stdout) specified.")
 
 def main():
     if set_global_filenames():
