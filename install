@@ -1,3 +1,49 @@
 #!/bin/bash
 
-cp -sf "${PWD}/pxml2ods" "/usr/local/bin/pxml2ods"
+confirm_libxml2_xsl()
+{
+    local -a lxml
+    local -a lxsl
+    lxml=( $( ldconfig -p | grep libxml2 - ) )
+    lxsl=( $( ldconfig -p | grep libxslt - ) )
+
+    [ "${#lxml[@]}" -gt 0 ] && [ "${#lxsl[@]}" -gt 0 ]
+}
+
+confirm_python_library()
+{
+    local re="\b$1\b"
+    local cmd="help(\"modules\")"
+    local -a libs
+    libs=( $( python -c "${cmd}" 2>/dev/null | grep -o $re - ) )
+
+    [ "${#libs[@]}" -eq 1 ]
+}
+
+confirm_python_bindings()
+{
+    if confirm_python_library "libxml2"; then
+       if confirm_python_library "libxslt"; then
+           return 0
+       else
+           echo "Missing python library libxslt"
+       fi
+    else
+        echo "Missing python library libxml2"
+    fi
+
+    return 1
+}
+
+
+if confirm_libxml2_xsl; then
+    if confirm_python_bindings; then
+        cp -sf "${PWD}/pxml2ods" "/usr/local/bin/pxml2ods"
+    else
+        echo "Cannot install until python bindings are installed:"
+        echo "sudo apt-get install python-libxml2 python-libxslt"
+    fi
+else
+    echo "Cannot install until libxml libraries are installed:"
+    echo "sudo apt-get install libxml2 libxslt"
+fi
