@@ -21,7 +21,7 @@ def show_usage():
     
 
 def set_global_filenames():
-    global g_infile, g_outfilename
+    global g_infile, g_outfile
 
     argcount = len(sys.argv)
     if argcount == 1:
@@ -30,7 +30,7 @@ def set_global_filenames():
     if argcount > 1:
         g_infile = sys.argv[1]
     if argcount > 2:
-        g_outfilename = sys.argv[2]
+        g_outfile = sys.argv[2]
 
     return True
 
@@ -68,13 +68,13 @@ def process_files(xmldoc, outfile):
         ods.close()
 
 def get_outfile(xmldoc):
-    global g_outfilename
-    if g_outfilename:
-        outfile = open(g_outfilename,"w")
+    global g_infile, g_outfile
+    if g_outfile:
+        outfile = open(g_outfile,"w")
         process_files(xmldoc, outfile)
         outfile.close()
     else:
-        process_files(infile, sys.stdout)
+        process_files(g_infile, sys.stdout)
 
 def get_in_file():
     if g_infile:
