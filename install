@@ -41,7 +41,7 @@ if confirm_libxml2_xsl; then
         cp -sf "${PWD}/pxml2ods" "/usr/local/bin/pxml2ods"
     else
         echo "Cannot install until python bindings are installed:"
-        echo "sudo apt-get install python-libxml2 python-libxslt"
+        echo "sudo apt-get install python-libxml2 python-libxslt1"
     fi
 else
     echo "Cannot install until libxml libraries are installed:"
