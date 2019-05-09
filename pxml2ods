@@ -7,13 +7,17 @@ import zipfile
 import libxml2
 import libxslt
 import tempfile
-from heredocs import *
+import importlib
 
 g_infile = None
 g_outfile = None
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 g_transformxsl = os.path.join(__location__, "transform.xsl")
+
+sys.path.append(__location__)
+import heredocs
+
 
 def show_usage():
     print "Usage:"
