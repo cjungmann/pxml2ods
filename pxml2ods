@@ -9,15 +9,15 @@ import libxslt
 import tempfile
 import importlib
 
-g_infile = None
-g_outfile = None
+# Get origin location for loading supplemental files:
+__location__ = '/'.join(os.path.realpath(__file__).split('/')[:-1])
+sys.path.append(__location__)
+from heredocs import *
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 g_transformxsl = os.path.join(__location__, "transform.xsl")
 
-sys.path.append(__location__)
-import heredocs
-
+g_infile = None
+g_outfile = None
 
 def show_usage():
     print "Usage:"
