@@ -23,6 +23,7 @@
       method="xml"
       version="1.0"
       indent="yes"
+      standalone="yes"
       encoding="utf-8"/>
 
   <xsl:template match="/">
